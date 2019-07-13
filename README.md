@@ -1,3 +1,3 @@
 # selenium-tests-study
 
-E2E-tests to practice Selenium
+UI-tests to practice Selenium
