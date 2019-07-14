@@ -10,8 +10,3 @@
 ### Expected results
 * User should see new panel "My account"
 
-### Actual results
-* As Expected
-
-### Pass/Fail
-* Pass

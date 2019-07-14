@@ -12,8 +12,3 @@
 ### Expected results
 User should see all restaurants with minimal order amount less then 10 EUR
 
-### Actual results
-As Expected
-
-### Pass/Fail
-Pass

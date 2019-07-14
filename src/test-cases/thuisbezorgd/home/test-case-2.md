@@ -16,8 +16,3 @@
 ### Expected results
 * User should see a pop-up window *"The entered postcode is invalid. A postcode needs to consist of at least 4 digits and an optional two letters. For example: 1017AB."*
 
-### Actual results
-* As Expected
-
-### Pass/Fail
-* Pass

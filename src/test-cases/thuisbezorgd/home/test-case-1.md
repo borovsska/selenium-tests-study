@@ -16,8 +16,4 @@
 ### Expected results
 * User should be redirected to the page with a list of restaurants that deliver to the address entered.
 
-### Actual results
-* As Expected
 
-### Pass/Fail
-* Pass
