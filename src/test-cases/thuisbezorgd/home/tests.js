@@ -1,5 +1,5 @@
-require('chromedriver');
-const {Builder, By, until} = require('selenium-webdriver');
+const {By, until} = require('selenium-webdriver');
+const {createChromeDriver} = require('../../../webdrivers');
 
 describe('Home page', function () {
     // object to work with a browser
@@ -7,7 +7,7 @@ describe('Home page', function () {
     const pageUrl = 'https://www.thuisbezorgd.nl/en/';
 
     beforeEach(async function() {
-        driver = await new Builder().forBrowser('chrome').build();
+        driver = await createChromeDriver();
     });
 
     afterEach(async function() {
