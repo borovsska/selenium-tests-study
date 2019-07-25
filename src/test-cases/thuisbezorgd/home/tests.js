@@ -108,7 +108,7 @@ describe('Home page', function () {
         }
 
         expect(languages).toEqual([
-           'English',
+            'English',
             'Nederlands',
             'Deutsch',
             'Français',

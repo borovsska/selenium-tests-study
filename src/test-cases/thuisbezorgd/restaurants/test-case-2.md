@@ -1,4 +1,4 @@
-# Test case #1
+# Test case #2
 
 ### Subject
 * Check all labels for free delivery
