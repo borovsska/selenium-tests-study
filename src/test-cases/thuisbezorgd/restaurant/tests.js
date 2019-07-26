@@ -6,8 +6,8 @@ describe('Restaurant page example', function () {
     // object to work with a browser
     let driver;
 
-    async function openPage () {
-        await driver.get('https://www.thuisbezorgd.nl/en/streetfood-by-han-amsterdam');
+    async function openPage (pageUrl) {
+        await driver.get(pageUrl);
         await driver.findElement(By.css('.notice-container')).click();
         await driver.sleep(2000);
         await driver.findElement(By.css('.topbar__title-container')).click();
@@ -28,7 +28,7 @@ describe('Restaurant page example', function () {
     });
 
     test('Check costs in shopping basket', async function () {
-        await openPage();
+        await openPage('https://www.thuisbezorgd.nl/en/streetfood-by-han-amsterdam');
         const [firstMeal, secondMeal] = await driver.findElements(By.css('[id^="popular"]'));
 
         await firstMeal.click();
@@ -52,8 +52,8 @@ describe('Restaurant page example', function () {
         );
     });
 
-    test('Check basket item deleting', async function () {
-        await openPage();
+    test('Check basket decrease button on one added item', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/streetfood-by-han-amsterdam');
         const mealInBasketSelector = By.css('#products .cart-single-meal');
         const firstMeal = await driver.findElement(By.css('[id^="popular"]'));
 
@@ -69,18 +69,8 @@ describe('Restaurant page example', function () {
         expect(await driver.findElement(By.css('.basket-empty__text')).isDisplayed()).toBe(true);
     });
 
-    test('Check basket total cost with delivery', async function () {
-        await driver.get('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
-        await driver.findElement(By.css('.notice-container')).click();
-        await driver.sleep(2000);
-        await driver.findElement(By.css('.topbar__title-container')).click();
-        await driver.findElement(By.css('#imysearchstring')).sendKeys('Rozengracht 30, Amsterdam');
-
-        await driver
-            .wait(until.elementLocated(By.css('[data-name="Rozengracht 30, Amsterdam"]')), 700)
-            .click();
-        await driver.sleep(3000);
-
+    test('Check basket total cost including delivery', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
         const [firstMeal, secondMeal] = await driver.findElements(By.css('[id^="popular"]'));
         const mealInBasketSelector = By.css('#products .cart-single-meal');
 
@@ -105,5 +95,24 @@ describe('Restaurant page example', function () {
             getPriceFromLabel(firstMealPriceLabel) +
             getPriceFromLabel(deliveryCostPriceLabel)
         );
+    });
+
+    test('Check basket item removing button', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
+        const firstMeal = await driver.findElement(By.css('[id^="popularNPN0RNRN7"]'));
+        const mealInBasketSelector = By.css('#products .cart-single-meal');
+
+        await firstMeal.click();
+        await firstMeal.click();
+        await driver.wait(until.elementLocated(mealInBasketSelector), 500);
+
+        await driver.findElement(By.css('.cart-meal-delete')).click();
+
+        const totalPriceLabel = await driver.findElement(By.css('.js-total-costs-row .cart-sum-price')).getText();
+        const emptyBasketText = await driver.findElement(By.css('.basket-empty__text')).getText();
+
+        expect(getPriceFromLabel(totalPriceLabel)).toBe(0.00);
+        expect(emptyBasketText)
+            .toBe('At the moment, your shopping cart is empty. You can add products by clicking on items from the menu.');
     });
 });
