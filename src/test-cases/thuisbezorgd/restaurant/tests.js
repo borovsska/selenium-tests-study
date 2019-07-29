@@ -115,4 +115,46 @@ describe('Restaurant page example', function () {
         expect(emptyBasketText)
             .toBe('At the moment, your shopping cart is empty. You can add products by clicking on items from the menu.');
     });
+
+    test('Check color of basket hint text', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
+        const firstMeal = await driver.findElement(By.css('[id^="popularNPN0RNRN7"]'));
+        const mealInBasketSelector = By.css('#products .cart-single-meal');
+
+        await firstMeal.click();
+        await driver.wait(until.elementLocated(mealInBasketSelector), 500);
+        const labelColor = await driver.findElement(By.css('.js-to-reach-minimum-row .cart-sum-name'))
+            .getCssValue('color');
+        const priceColor = await driver.findElement(By.css('.js-to-reach-minimum-row .cart-sum-price'))
+            .getCssValue('color');
+
+        expect(labelColor).toBe('rgba(51, 136, 0, 1)');
+        expect(priceColor).toBe('rgba(51, 136, 0, 1)');
+    });
+
+    test('Check tags of basket hint text', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
+        const firstMeal = await driver.findElement(By.css('[id^="popularNPN0RNRN7"]'));
+        const mealInBasketSelector = By.css('#products .cart-single-meal');
+
+        await firstMeal.click();
+        await driver.wait(until.elementLocated(mealInBasketSelector), 500);
+        const labelTagName = await driver.findElement(By.css('.js-to-reach-minimum-row .cart-sum-name')).getTagName();
+        const priceTagName = await driver.findElement(By.css('.js-to-reach-minimum-row .cart-sum-price')).getTagName();
+
+        expect(labelTagName).toBe('span');
+        expect(priceTagName).toBe('span');
+    });
+
+    test('Check that basket is displayed', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
+        const isBasketDisplayed = await driver.findElement(By.css('#ibasket')).isDisplayed();
+
+        expect(isBasketDisplayed).toBe(true);
+    });
+
+    test('Check that page title contains a specific text', async function () {
+        await openPage('https://www.thuisbezorgd.nl/en/sumo-take-away-delivery-amsterdam-nieuwezijds-voorburgwal');
+        await driver.wait(until.titleContains('Sumo Take Away & Delivery'), 500);
+    });
 });
