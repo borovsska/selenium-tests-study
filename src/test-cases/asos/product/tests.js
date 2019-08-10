@@ -1,7 +1,7 @@
 const {By, until} = require('selenium-webdriver');
 const {createChromeDriver} = require('../../../webdrivers');
 
-describe('Home page', function () {
+describe('Product page', function () {
     // object to work with a browser
     let driver;
     const pageUrl = 'https://www.asos.com/nl/asos-tall/asos-design-tall-premium-geplooide-lange-jurk-met-kanten-inzetstuk/prd/12599677?CTARef=Saved+Items+Image';
