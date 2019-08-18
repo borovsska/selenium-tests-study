@@ -1,10 +1,11 @@
 const {By, until} = require('selenium-webdriver');
 const {createChromeDriver} = require('../../../webdrivers');
+const {getPriceFromLabel} = require('../../../parsers');
 
 describe('Product page', function () {
     // object to work with a browser
     let driver;
-    const pageUrl = 'https://www.asos.com/nl/asos-tall/asos-design-tall-premium-geplooide-lange-jurk-met-kanten-inzetstuk/prd/12599677?CTARef=Saved+Items+Image';
+    const pageUrl = 'https://www.asos.com/nl/asos-design/asos-design-schouderloze-maxi-jurk-met-bloemenprint/prd/12978097?clr=multi&colourWayId=16450741&SearchQuery=&cid=2623';
 
     beforeEach(async function () {
         driver = await createChromeDriver();
@@ -47,6 +48,71 @@ describe('Product page', function () {
 
         expect(productPriceLabel).toMatch(/^€ [0-9]+,[0-9]{2}$/);
     });
-});
 
+    test('Check products adding to the basket', async function () {
+        await driver.get(pageUrl);
+        const addingToBasketButton = await driver.findElement(By.css('.add-item'));
+
+        await addingToBasketButton.click();
+        await driver.wait(until.elementLocated(By.css('.basic-error-box')), 500);
+
+        const errorText = await driver.findElement(By.css('.basic-error-box')).getText();
+
+        expect(errorText).toBe('Kies uit de beschikbare kleur- en maatopties.');
+        async function selectSize (itemIndex) {
+            await driver.executeScript(`
+                const select = document.querySelector('[data-id="sizeSelect"]');
+                const changeEvent = new Event('change');
+                
+                select.querySelector('option:nth-child(${itemIndex})').selected = true;
+                select.dispatchEvent(changeEvent);
+            `);
+        }
+
+        await selectSize(2);
+        await addingToBasketButton.click();
+        await driver.sleep(8000);
+        await selectSize(3);
+        await addingToBasketButton.click();
+        await driver.sleep(2000);
+
+        await driver.findElement(By.css('#miniBagDropdown')).click();
+        await driver.sleep(2000);
+        await driver.findElement(By.css('[data-test-id="bag-link"]')).click();
+
+        const subtotalPriceLocator = By.css('.bag-contents-holder .bag-total-price');
+        const priceLabelLocator = By.css('.bag-contents-holder .bag-item-price--current');
+
+        await driver.wait(until.elementLocated(subtotalPriceLocator), 1000);
+        await driver.wait(until.elementsLocated(priceLabelLocator), 1000);
+        const subtotalPriceLabel = await driver.findElement(subtotalPriceLocator).getText();
+
+        expect(subtotalPriceLabel).toMatch(/^€ [0-9]+,[0-9]{2}$/);
+
+        const priceLabels = await driver.findElements(priceLabelLocator);
+        let totalProductsPrice = 0;
+
+        for(const priceLabel of priceLabels) {
+            const priceLabelText = await priceLabel.getText();
+
+            totalProductsPrice = totalProductsPrice + getPriceFromLabel(priceLabelText);
+        }
+
+        expect(getPriceFromLabel(subtotalPriceLabel)).toBe(totalProductsPrice);
+
+        const standardDeliveryOptionText = await driver
+            .findElement(By.css('.delivery-dropdown-holder [id^="select2"]'))
+            .getText();
+
+        expect(standardDeliveryOptionText).toBe('Standaardlevering (Gratis)');
+    });
+
+    test('Check product size selection', async function () {
+        await driver.get(pageUrl);
+
+        const sizeSelection = await driver.findElements(By.css('#product-size [data-id="sizeSelect"] option'));
+
+        expect(sizeSelection.length).toBeGreaterThan(1);
+    });
+});
 
