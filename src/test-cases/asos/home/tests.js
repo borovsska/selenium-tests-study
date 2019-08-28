@@ -1,5 +1,6 @@
-const {By, until, Key} = require('selenium-webdriver');
+const {By, until} = require('selenium-webdriver');
 const {createChromeDriver} = require('../../../webdrivers');
+const {clearInput} = require('../../../inputs');
 
 describe('Home page', function () {
     // object to work with a browser
@@ -25,9 +26,7 @@ describe('Home page', function () {
 
         expect(searchResultsLabels.length).toBeGreaterThan(0);
 
-        for(let i = 0; i < searchText.length; i++) {
-            await searchInput.sendKeys(Key.BACK_SPACE);
-        }
+        await clearInput(searchInput);
         await driver.sleep(1000);
         const searchResultsLists = await driver.findElements(By.css('#search-results'));
 

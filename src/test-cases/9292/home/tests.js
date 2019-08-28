@@ -1,5 +1,6 @@
 const {By, until} = require('selenium-webdriver');
 const {createChromeDriver} = require('../../../webdrivers');
+const {clearInput} = require('../../../inputs');
 
 describe('Product page', function () {
     // object to work with a browser
@@ -47,5 +48,23 @@ describe('Product page', function () {
             await label.click();
             expect(await label.getAttribute('class')).not.toMatch('active');
         }
+    });
+
+    test('Check trip page url', async function () {
+        await driver.get(pageUrl);
+        await acceptCookies();
+        await driver.findElement(By.css('#van')).sendKeys('Amsterdam Centraal');
+        await driver.findElement(By.css('#naar')).sendKeys('Alkmaar');
+
+        const timeInput = await driver.findElement(By.css('#time'));
+
+        await clearInput(timeInput);
+        await timeInput.sendKeys('23:00');
+        await driver.findElement(By.css('[for="vertrek"]')).click();
+        await driver.findElement(By.css('#planner')).submit();
+
+        const expectedUrl = await driver.getCurrentUrl();
+
+        expect(expectedUrl).toBe('https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/2019-08-28T2309');
     });
 });
