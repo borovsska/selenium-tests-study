@@ -1,16 +1,12 @@
 const {By, until} = require('selenium-webdriver');
 const {createChromeDriver} = require('../../../webdrivers');
 const {clearInput} = require('../../../inputs');
+const {acceptCookies} = require('../helpers');
 
-describe('Product page', function () {
+describe('Home page', function () {
     // object to work with a browser
     let driver;
     const pageUrl = 'https://9292.nl/';
-
-    async function acceptCookies () {
-        await driver.wait(until.elementLocated(By.css('#btnAccord')), 1000);
-        await driver.executeScript(`document.querySelector('#btnAccord').click()`);
-    }
 
     beforeEach(async function () {
         driver = await createChromeDriver();
@@ -22,7 +18,7 @@ describe('Product page', function () {
 
     test('Check planner form validation', async function () {
         await driver.get(pageUrl);
-        await acceptCookies();
+        await acceptCookies(driver);
 
         const plannerFormLocator = By.css('#planner');
 
@@ -33,7 +29,7 @@ describe('Product page', function () {
 
     test('Check transport extra options', async function () {
         await driver.get(pageUrl);
-        await acceptCookies();
+        await acceptCookies(driver);
         await driver.findElement(By.css('#extratab')).click();
         await driver.wait(until.elementLocated(By.css('.vervoertypes')), 1000);
 
@@ -52,7 +48,7 @@ describe('Product page', function () {
 
     test('Check trip page url', async function () {
         await driver.get(pageUrl);
-        await acceptCookies();
+        await acceptCookies(driver);
         await driver.findElement(By.css('#van')).sendKeys('Amsterdam Centraal');
         await driver.findElement(By.css('#naar')).sendKeys('Alkmaar');
 
@@ -65,6 +61,6 @@ describe('Product page', function () {
 
         const expectedUrl = await driver.getCurrentUrl();
 
-        expect(expectedUrl).toBe('https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/2019-08-28T2309');
+        expect(expectedUrl).toBe('https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/2019-09-01T2309');
     });
 });
