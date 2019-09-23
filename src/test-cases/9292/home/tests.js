@@ -63,4 +63,29 @@ describe('Home page', function () {
 
         expect(expectedUrl).toBe('https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/2019-09-01T2309');
     });
+
+    test('Check disruptions option', async function () {
+        await driver.get(pageUrl);
+        await acceptCookies(driver);
+        await driver.findElement(By.css('.verstoringenButton')).click();
+        await driver.wait(until.elementLocated(By.css('#disturbancetab.active')), 500);
+
+        const disruptionsPanel = await driver.findElement(By.css('#unscheduledDisruptions'));
+        const disruptionOptions = await disruptionsPanel.findElements(By.css('.list-group-item'));
+        const disruptionOptionsCount = disruptionOptions.length;
+        // 'Ongeplande verstoringen (10)'
+        const unscheduledDisruptionText = await disruptionsPanel.findElement(By.css('h6.bluetxt')).getText();
+        const disruptionsListMatch = /[0-9]+/.exec(unscheduledDisruptionText);
+
+        if (disruptionsListMatch === null) {
+            throw new Error('Invalid disruptions number value: ' + unscheduledDisruptionText);
+        }
+
+        expect(Number(disruptionsListMatch)).toBe(disruptionOptionsCount);
+
+        const disruptionsCountOnIcon = await driver.findElement(By.css('#disturbancetab')).getText();
+
+        expect(Number(disruptionsCountOnIcon)).toBe(disruptionOptionsCount);
+
+    });
 });
