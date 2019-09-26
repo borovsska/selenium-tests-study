@@ -5,7 +5,14 @@ const {acceptCookies} = require('../helpers');
 describe('Trip page', function () {
     // object to work with a browser
     let driver;
-    const pageUrl = 'https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/2019-09-03T2309';
+    const actualDate = new Date();
+    const year = actualDate.getFullYear();
+    const month = String(actualDate.getMonth() + 1).padStart(2, '0');
+    const date = String(actualDate.getDate() + 1).padStart(2, '0');
+    const hours = actualDate.getHours();
+    const minutes = actualDate.getMinutes();
+    const dateStr = `${year}-${month}-${date}T${hours}${minutes}`;
+    const pageUrl = `https://9292.nl/reisadvies/station-amsterdam-centraal/station-alkmaar/vertrek/${dateStr}`;
     const timePattern = /^[0-9]{2}:[0-9]{2}$/;
 
     beforeEach(async function () {
@@ -46,6 +53,7 @@ describe('Trip page', function () {
         await acceptCookies(driver);
         const activePanel = driver.findElement(By.css('.dynamic-tab-pane-control.active'));
 
+        await driver.sleep(1000);
         await activePanel.findElement(By.css('.link-toggle-closed')).click();
 
         const stopsInfoLocator = By.css('.leg-item-toggleInfo');
