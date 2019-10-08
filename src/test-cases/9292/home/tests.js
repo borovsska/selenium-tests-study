@@ -86,6 +86,45 @@ describe('Home page', function () {
         const disruptionsCountOnIcon = await driver.findElement(By.css('#disturbancetab')).getText();
 
         expect(Number(disruptionsCountOnIcon)).toBe(disruptionOptionsCount);
+    });
 
+    test('Check autocomplete in the departure search field', async function () {
+        await driver.get(pageUrl);
+        await acceptCookies(driver);
+        await driver.findElement(By.css('#van')).sendKeys('Amsterdam');
+
+        const tripSuggestionItemsLocator = By.css('.location-suggest__item');
+
+        await driver.wait(until.elementLocated(tripSuggestionItemsLocator), 500);
+
+        const tripSuggestionItems = await driver.findElements(tripSuggestionItemsLocator);
+
+        expect(tripSuggestionItems.length).toBeGreaterThan(0);
+
+        for (const tripSuggestionItem of tripSuggestionItems) {
+            const suggestionsText = await tripSuggestionItem.getText();
+
+            expect(suggestionsText).toMatch(/^Amsterdam/);
+        }
+    });
+
+    test('Check autocomplete in the top search field', async function () {
+        await driver.get(pageUrl);
+        await acceptCookies(driver);
+        await driver.findElement(By.css('#vtt-text')).sendKeys('Amsterdam');
+
+        const tripSuggestionItemsLocator = By.css('.location-suggest__category');
+
+        await driver.wait(until.elementLocated(tripSuggestionItemsLocator), 500);
+
+        const tripSuggestionItems = await driver.findElements(By.css('.location-suggest__item'));
+
+        expect(tripSuggestionItems.length).toBeGreaterThan(0);
+
+        for (const tripSuggestionItem of tripSuggestionItems) {
+            const suggestionsText = await tripSuggestionItem.getText();
+
+            expect(suggestionsText).toMatch(/^Amsterdam/);
+        }
     });
 });

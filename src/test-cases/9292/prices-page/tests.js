@@ -3,7 +3,7 @@ const {createChromeDriver} = require('../../../webdrivers');
 const {clearInput} = require('../../../inputs');
 const {acceptCookies} = require('../helpers');
 
-describe('Home page', function () {
+describe('Prices page', function () {
     let driver;
     const pageUrl = 'https://9292.nl/prijzen-en-abonnementen/reizen-op-rekening';
 
