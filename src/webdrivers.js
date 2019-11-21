@@ -6,7 +6,7 @@ exports.createChromeDriver = async function () {
     const chromeOptions = new chrome.Options();
 
     chromeOptions.options_['w3c'] = false;
-    // chromeOptions.headless();
+    chromeOptions.headless();
 
     return new Builder()
         .forBrowser('chrome')
