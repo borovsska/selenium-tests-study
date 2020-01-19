@@ -108,8 +108,8 @@ describe('Home page', function () {
          * @param {WebElement} bookingPriceLabel
          * @returns {number}
          */
-        const getBookingPrice = (bookingPriceLabel) => {
-            const totalOutboundPriceText = bookingPriceLabel.getText();
+        const getBookingPrice = async (bookingPriceLabel) => {
+            const totalOutboundPriceText = await bookingPriceLabel.getText();
 
             return getPriceFromLabel(totalOutboundPriceText)
         };
@@ -119,18 +119,9 @@ describe('Home page', function () {
             totalInboundLabel,
             totalTicketsPriceLabel
         ] = await driver.findElements(By.css('.bookingSummary__price'));
-        // const totalOutboundPriceText = await totalOutboundLabel.getText();
-        // const totalOutboundPrice = getPriceFromLabel(totalOutboundPriceText);
-
-        // const totalInboundPriceText = await totalInboundLabel.getText();
-        // const totalInboundPrice = getPriceFromLabel(totalInboundPriceText);
-
-        // const totalTicketsPriceText = await totalTicketsPriceLabel.getText();
-        // const totalTicketsPrice = getPriceFromLabel(totalTicketsPriceText);
-
-        const totalOutboundPrice = getBookingPrice(totalOutboundLabel);
-        const totalInboundPrice = getBookingPrice(totalInboundLabel);
-        const totalTicketsPrice = getBookingPrice(totalTicketsPriceLabel);
+        const totalOutboundPrice = await getBookingPrice(totalOutboundLabel);
+        const totalInboundPrice = await getBookingPrice(totalInboundLabel);
+        const totalTicketsPrice = await getBookingPrice(totalTicketsPriceLabel);
 
         expect(totalTicketsPrice).toBe(totalInboundPrice + totalOutboundPrice);
         expect(totalOutboundPrice).toBe(departureTicketPrice);
