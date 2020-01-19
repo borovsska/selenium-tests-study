@@ -44,10 +44,10 @@ describe('Review page', function () {
 
     test('Check percentage of reviews', async function () {
         await driver.get(pageUrl);
-        const allReviewsValue = await driver.findElements(By.css('.chart__cell__value'));
+        const allReviewsValues = await driver.findElements(By.css('.chart__cell__value'));
         let reviewsPercentageValue = 0;
 
-        for (const reviewValue of allReviewsValue) {
+        for (const reviewValue of allReviewsValues) {
             const reviewValueText = await reviewValue.getText();
 
             reviewsPercentageValue = reviewsPercentageValue + getPriceFromLabel(reviewValueText);
